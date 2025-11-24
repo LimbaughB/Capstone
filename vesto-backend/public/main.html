@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vesto - Paper Trading Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+
+    <!-- Auth Page: Login & Signup -->
+    <div id="authPage" class="auth-container">
+        <div class="card auth-card">
+            <div class="auth-header">
+                <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12L5 14L8 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 19L5 21L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 5L21 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 12L21 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 19L21 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <h1 class="logo-text">Vesto</h1>
+            </div>
+            
+            <div class="tab-nav">
+                <button id="signupTab" class="tab-button tab-active">Sign Up</button>
+                <button id="loginTab" class="tab-button">Login</button>
+            </div>
+
+            <div id="authMessage" class="message-area"></div>
+
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input id="signup-name" name="name" type="text" required placeholder="John Doe" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input id="signup-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input id="signup-password" name="password" type="password" required placeholder="••••••••" autocomplete="new-password">
+                </div>
+                <button id="signupButton" type="submit" class="btn btn-primary">Create Account</button>
+                <p class="form-footer-text">
+                    Already have an account? <a href="#" id="switchToLoginLink">Login</a>
+                </p>
+            </form>
+
+            <form id="loginForm" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input id="login-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input id="login-password" name="password" type="password" required placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <div class="form-group-inline">
+                    <input type="checkbox" id="rememberMe" name="remember-me">
+                    <label for="rememberMe">Remember Me</label>
+                </div>
+                <button id="loginButton" type="submit" class="btn btn-primary">Login</button>
+                <p class="form-footer-text">
+                    Don't have an account? <a href="#" id="switchToSignupLink">Sign Up</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application (Dashboard & Trading) -->
+    <div id="mainApp" style="display: none;">
+         <header class="header">
+            <div class="container header-content">
+                <div class="header-logo-wrapper">
+                     <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12L5 14L8 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 19L5 21L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 5L21 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 12L21 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 19L21 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <h1 class="logo-text">Vesto</h1>
+                </div>
+                <!-- Desktop Navigation -->
+                <nav class="main-nav desktop-nav">
+                    <button id="navDashboard" class="nav-link nav-active">Dashboard</button>
+                    <button id="navTrade" class="nav-link">Trade</button>
+                    <div class="theme-switch-wrapper">
+                        <label class="theme-switch" for="themeToggleInput">
+                            <input type="checkbox" id="themeToggleInput" />
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <button id="logoutButton" class="nav-link nav-link-logout">Logout</button>
+                </nav>
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="mobile-menu-button" aria-controls="mobileMenu" aria-expanded="false">
+                    <span class="hamburger-line top"></span>
+                    <span class="hamburger-line middle"></span>
+                    <span class="hamburger-line bottom"></span>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="mobile-menu">
+            <button id="mobileNavDashboard" class="nav-link nav-active">Dashboard</button>
+            <button id="mobileNavTrade" class="nav-link">Trade</button>
+            <div class="theme-switch-wrapper">
+                <span class="nav-link">Dark Mode</span>
+                <label class="theme-switch" for="mobileThemeToggleInput">
+                    <input type="checkbox" id="mobileThemeToggleInput" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <button id="mobileLogoutButton" class="nav-link">Logout</button>
+        </div>
+
+        <!-- Notification Area -->
+        <div id="notificationArea" class="notification-area"></div>
+
+        <main class="container main-content">
+            
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="dashboard-grid">
+                <div class="summary-grid">
+                    <div class="card summary-card">
+                        <h3>Total Portfolio Value</h3>
+                        <p id="portfolioValue" class="stat-value">$0.00</p>
+                    </div>
+                     <div class="card summary-card">
+                        <h3>Day's Gain/Loss</h3>
+                        <p id="dayGainLoss" class="stat-value text-gain">$0.00</p>
+                    </div>
+                     <div class="card summary-card">
+                        <h3>Total Gain/Loss</h3>
+                        <p id="totalGainLoss" class="stat-value text-loss">$0.00</p>
+                    </div>
+                    <div class="card summary-card">
+                        <h3>Buying Power</h3>
+                        <p id="buyingPower" class="stat-value">$0.00</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-header">Portfolio Performance</h2>
+                    <div class="chart-container-large">
+                        <canvas id="portfolioPerformanceChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                     <h2 class="card-header">My Holdings</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="align-left">Symbol</th>
+                                    <th class="align-right">Shares</th>
+                                    <th class="align-right">Avg. Cost/Share</th>
+                                    <th class="align-right">Current Price</th>
+                                    <th class="align-right">Total Value</th>
+                                    <th class="align-right">Day's Change</th>
+                                    <th class="align-right">Total G/L</th>
+                                </tr>
+                            </thead>
+                            <tbody id="holdingsTableBody">
+                                 <tr><td colspan="7" style="text-align: center; padding: 2rem;">No holdings to display.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trading Page -->
+            <div id="tradePage" style="display: none;">
+                <div class="trade-grid">
+                    
+                    <div class="card" id="quickTradePanel">
+                        <h2 class="card-header">Quick Trade</h2>
+                        <div id="quickTradeList" class="quick-trade-list">
+                            <p class="text-muted">You do not have any holdings to trade.</p>
+                        </div>
+                    </div>
+
+                    <div class="card trade-card-main">
+                        <h2 class="card-header">Stock Lookup</h2>
+                        <div class="search-bar">
+                            <input id="searchInput" type="text" placeholder="Enter stock ticker (e.g., AAPL)">
+                            <button id="searchButton" class="btn btn-primary">Search</button>
+                        </div>
+                        
+                        <div id="loadingIndicator" style="display: none;">Loading...</div>
+                        <div id="stockNotFound" class="message-area message-error" style="display: none;">Stock symbol not found. Please try another symbol.</div>
+
+                        <div id="stockInfo">
+                            <div id="tradeWelcomeMessage" class="trade-welcome">
+                                <h3>Welcome to the Trade Page</h3>
+                                <p>Search for a stock to get started, or select one of your current positions from the "Quick Trade" panel.</p>
+                            </div>
+
+                            <div id="stockData" style="display: none;">
+                                <div class="stock-header">
+                                    <h3 id="stockName" class="stock-name"></h3>
+                                    <div class="stock-price-wrapper">
+                                        <p id="stockPriceDisplay" class="stock-price"></p>
+                                        <p id="stockPriceChange" class="stock-price-change"></p>
+                                    </div>
+                                </div>
+                                <div class="stock-details-grid">
+                                    <div><span class="detail-label">High:</span> <span id="stockHigh"></span></div>
+                                    <div><span class="detail-label">Low:</span> <span id="stockLow"></span></div>
+                                    <div><span class="detail-label">Volume:</span> <span id="stockVolume"></span></div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="priceChart"></canvas>
+                                </div>
+                                <div class="range-selector">
+                                    <button class="range-btn" data-range="1M">1M</button>
+                                    <button class="range-btn range-btn-active" data-range="6M">6M</button>
+                                    <button class="range-btn" data-range="1Y">1Y</button>
+                                    <button class="range-btn" data-range="ALL">ALL</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card trade-card-side" id="tradeTerminal">
+                         <h2 class="card-header">Trade Terminal</h2>
+                         <div class="trade-terminal-content">
+                            <div class="terminal-info">
+                                <p>Buying Power</p>
+                                <p id="tradeBuyingPower" class="terminal-value">$0.00</p>
+                            </div>
+                             <div class="terminal-info">
+                                <p>Shares of <span id="tradeTerminalStockSymbol">--</span> Owned</p>
+                                <p id="tradeTerminalSharesOwned" class="terminal-value">0</p>
+                            </div>
+
+                            <div class="trade-toggle">
+                                <button id="buyToggle" class="toggle-btn active" data-type="BUY">Buy</button>
+                                <button id="sellToggle" class="toggle-btn" data-type="SELL">Sell</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quantityInput">Quantity</label>
+                                <input id="quantityInput" name="quantity" type="number" min="1" placeholder="0" disabled>
+                            </div>
+
+                            <div id="quantityPresets" class="quantity-presets">
+                                <button class="preset-btn" data-value="0.10">10%</button>
+                                <button class="preset-btn" data-value="0.25">25%</button>
+                                <button class="preset-btn" data-value="0.50">50%</button>
+                                <button class="preset-btn" data-value="1">Max</button>
+                            </div>
+
+                            <div class="estimated-cost">
+                                <p><span id="estimateLabel">Estimated Cost</span>: <span id="estimatedValue">$0.00</span></p>
+                            </div>
+                            
+                             <button id="tradeButton" class="btn" disabled>Select a stock</button>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+
