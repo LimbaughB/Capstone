@@ -332,3 +332,175 @@ input:checked + .slider:before { transform: translateX(20px); }
     .trade-grid { grid-template-columns: 1fr 2fr 1fr; } /* New 3-column layout */
 }
 
+
+
+/* --- LANDING PAGE STYLES --- */
+.landing-page {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+}
+
+.landing-nav {
+    background: white;
+    padding: 1rem 0;
+    box-shadow: var(--shadow-sm);
+}
+
+.landing-nav .nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center; /* Ensures buttons are vertically centered */
+}
+
+/* Base button style update for landing page */
+.nav-links .btn {
+    padding: 0.6rem 1.2rem; /* Better padding */
+    font-size: 0.95rem;
+    border-radius: 6px; /* Slightly tighter radius */
+    text-decoration: none; /* Removes underline */
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    display: inline-flex; /* Helps with centering text */
+    align-items: center;
+    justify-content: center;
+    line-height: 1; /* Fixes weird vertical alignment */
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary-color); /* Thicker border looks better */
+    color: var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: 2px solid var(--primary-color); /* Matches outline size */
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-1px); /* Slight lift effect */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.hero-section {
+    padding: 5rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.hero-text h1 {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    /* Fixed: Removed hidden character before #00d2ff */
+    background: -webkit-linear-gradient(45deg, var(--primary-color), #00d2ff);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-text p {
+    font-size: 1.25rem;
+    color: var(--text-color-light);
+    margin-bottom: 2rem;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.mockup-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg);
+    padding: 1rem;
+    height: 300px;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.mockup-header {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+
+.features-section {
+    padding: 5rem 0;
+    background: white;
+}
+
+.features-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+    background: var(--bg-color);
+    border-radius: 1rem;
+    transition: transform 0.2s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-card i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.landing-footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-color-light);
+}
+
+@media (max-width: 768px) {
+    .hero-content, .features-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .hero-text h1 { font-size: 2.5rem; }
+    .mockup-card { display: none; }
+}

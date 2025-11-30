@@ -426,7 +426,14 @@ app.post('/api/trade', protect, async (req, res) => {
 });
 
 // --- Catch-all Route ---
-app.get('*', (req, res) => {
+//app.get('*', (req, res) => {
+//    res.sendFile(path.join(__dirname, 'public', 'main.html'));
+//});
+app.get('/app', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'main.html'));
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
