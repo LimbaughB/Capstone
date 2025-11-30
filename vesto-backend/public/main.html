@@ -176,11 +176,19 @@
                     </div>
 
                     <div class="card trade-card-main">
-                        <h2 class="card-header">Stock Lookup</h2>
-                        <div class="search-bar">
-                            <input id="searchInput" type="text" placeholder="Enter stock ticker (e.g., AAPL)">
-                            <button id="searchButton" class="btn btn-primary">Search</button>
-                        </div>
+             <h2 class="card-header">Stock Lookup</h2>
+                <div class="search-bar">
+                    <input id="searchInput" type="text" placeholder="Enter stock ticker (e.g., AAPL)">
+                    <button id="searchButton" class="btn btn-primary">Search</button>
+                </div>
+                <!-- NEW: Trending Section -->
+                <div id="trendingSection" class="trending-wrapper">
+                    <p class="text-muted text-sm">Trending Now:</p>
+                    <div id="trendingList" class="trending-list">
+                        <!-- JavaScript will inject buttons here -->
+                        <span class="loading-dots">Loading market movers...</span>
+                    </div>
+                </div>
                         
                         <div id="loadingIndicator" style="display: none;">Loading...</div>
                         <div id="stockNotFound" class="message-area message-error" style="display: none;">Stock symbol not found. Please try another symbol.</div>

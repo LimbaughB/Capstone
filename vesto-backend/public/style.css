@@ -504,3 +504,47 @@ input:checked + .slider:before { transform: translateX(20px); }
     .hero-text h1 { font-size: 2.5rem; }
     .mockup-card { display: none; }
 }
+/* --- TRENDING STOCKS --- */
+.trending-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.trending-wrapper .text-sm {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.trending-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.trending-chip {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    color: var(--text-color);
+}
+
+.trending-chip:hover {
+    background-color: var(--link-hover-bg);
+    border-color: var(--input-focus-border);
+    transform: translateY(-1px);
+}
+
+.chip-symbol {
+    font-weight: 700;
+}
+
+.chip-change {
+    font-size: 0.75rem;
+    font-weight: 500;
+}

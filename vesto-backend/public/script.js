@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stockVolumeEl = document.getElementById('stockVolume'),
         quickTradeList = document.getElementById('quickTradeList'),
         rangeSelector = document.querySelector('.range-selector'),
+        trendingList = document.getElementById('trendingList'),
         // Trade Terminal
         tradeTerminal = document.getElementById('tradeTerminal'),
         buyToggle = document.getElementById('buyToggle'),
@@ -112,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if(isTrade) {
             await renderQuickTradePanel();
+            loadTrendingStocks();
         } else {
             await updateDashboardUI();
         }
@@ -275,6 +277,42 @@ document.addEventListener('DOMContentLoaded', () => {
             showNotification('An error occurred while executing the trade.', false);
         }
     }
+    async function loadTrendingStocks() {
+    try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}/trending`, {
+            headers: { 'Authorization': `Bearer ${appState.token}` }
+        });
+        
+        if (!response.ok) return;
+        
+        const stocks = await response.json();
+        
+        trendingList.innerHTML = ''; // Clear loading text
+        
+        stocks.forEach(stock => {
+            const chip = document.createElement('button');
+            chip.className = 'trending-chip';
+            chip.innerHTML = `
+                <span class="chip-symbol">${stock.symbol}</span>
+                <span class="chip-change ${stock.change >= 0 ? 'text-gain' : 'text-loss'}">
+                    ${stock.change > 0 ? '+' : ''}${stock.change.toFixed(2)}%
+                </span>
+            `;
+            
+            // Make it clickable
+            chip.addEventListener('click', () => {
+                searchInput.value = stock.symbol;
+                loadStock(stock.symbol);
+            });
+            
+            trendingList.appendChild(chip);
+        });
+        
+    } catch (error) {
+        console.error('Failed to load trending:', error);
+        trendingList.innerHTML = ''; // Hide on error
+    }
+}
 
     // --- AUTHENTICATION & SESSION ---
 
