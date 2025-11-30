@@ -277,6 +277,30 @@ app.get('/api/search/:symbol', protect, async (req, res) => {
     }
 });
 
+// ---> NEW TRENDING ROUTE <---
+app.get('/api/trending', protect, async (req, res) => {
+    try {
+        // Fetch "Most Active" stocks from FMP
+        const url = `https://financialmodelingprep.com/api/v3/stock_market/actives?apikey=${process.env.FINANCIAL_MODELING_PREP_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Return top 5 trending stocks
+        const trending = data.slice(0, 5).map(stock => ({
+            symbol: stock.symbol,
+            name: stock.name,
+            price: stock.price,
+            change: stock.change
+        }));
+
+        res.status(200).json(trending);
+    } catch (error) {
+        console.error('Error fetching trending stocks:', error);
+        res.status(500).json({ message: 'Failed to load trending stocks' });
+    }
+});
+
+
 app.post('/api/quotes', protect, async (req, res) => {
     const { symbols } = req.body;
     if (!symbols || !Array.isArray(symbols) || symbols.length === 0) {
@@ -425,15 +449,14 @@ app.post('/api/trade', protect, async (req, res) => {
     }
 });
 
-// --- Catch-all Route ---
-//app.get('*', (req, res) => {
-//    res.sendFile(path.join(__dirname, 'public', 'main.html'));
-//});
+// --- Catch-all Route for Frontend ---
+
+// 1. Route for the App Dashboard (Login/Trading)
 app.get('/app', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'main.html'));
 });
 
+// 2. Catch-all: Send everything else to the Landing Page (index.html)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
