@@ -38,6 +38,20 @@
                     <label for="signup-password">Password</label>
                     <input id="signup-password" name="password" type="password" required placeholder="••••••••" autocomplete="new-password">
                 </div>
+                <div class="form-group">
+                    <label for="signup-question">Security Question</label>
+                    <select id="signup-question" name="securityQuestion" required>
+                        <option value="" disabled selected>Select a question...</option>
+                        <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                        <option value="What was the name of your first pet?">What was the name of your first pet?</option>
+                        <option value="What city were you born in?">What city were you born in?</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="signup-answer">Security Answer</label>
+                    <input id="signup-answer" name="securityAnswer" type="text" required placeholder="Answer" autocomplete="off">
+                </div>
+                <!-- ... Create Account button ... -->
                 <button id="signupButton" type="submit" class="btn btn-primary">Create Account</button>
                 <p class="form-footer-text">
                     Already have an account? <a href="#" id="switchToLoginLink">Login</a>
@@ -53,6 +67,14 @@
                     <label for="login-password">Password</label>
                     <input id="login-password" name="password" type="password" required placeholder="••••••••" autocomplete="current-password">
                 </div>
+                <div class="form-group-inline" style="justify-content: space-between;">
+                    <div>
+                        <input type="checkbox" id="rememberMe" name="remember-me">
+                        <label for="rememberMe">Remember Me</label>
+                    </div>
+                    <a href="#" id="forgotPasswordLink" style="font-size: 0.85rem;">Forgot Password?</a>
+                </div>
+                <!-- ... Login button ... -->
                 <div class="form-group-inline">
                     <input type="checkbox" id="rememberMe" name="remember-me">
                     <label for="rememberMe">Remember Me</label>
@@ -265,7 +287,35 @@
             </div>
         </main>
     </div>
-    
+<div id="resetModal" class="modal-overlay" style="display: none;">
+    <div class="card auth-card modal-content">
+        <div class="auth-header">
+            <h3>Reset Password</h3>
+        </div>
+        <div id="resetMessage" class="message-area"></div>
+        <form id="resetStep1">
+            <div class="form-group">
+                <label>Enter your email address</label>
+                <input id="reset-email" type="email" required placeholder="you@example.com">
+            </div>
+            <button type="submit" class="btn btn-primary">Next</button>
+            <button type="button" class="btn btn-outline" id="closeResetModal" style="margin-top: 0.5rem;">Cancel</button>
+        </form>
+        <form id="resetStep2" style="display: none;">
+            <p id="securityQuestionDisplay" style="margin-bottom: 1rem; font-weight: 600; color: var(--primary-color);"></p>
+            
+            <div class="form-group">
+                <label>Your Answer</label>
+                <input id="reset-answer" type="text" required placeholder="Answer">
+            </div>
+            <div class="form-group">
+                <label>New Password</label>
+                <input id="reset-new-password" type="password" required placeholder="New Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Reset Password</button>
+        </form>
+    </div>
+</div>
     <script src="script.js"></script>
 </body>
 </html>

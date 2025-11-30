@@ -37,6 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
         rememberMe = document.getElementById('rememberMe'),
         switchToLoginLink = document.getElementById('switchToLoginLink'),
         switchToSignupLink = document.getElementById('switchToSignupLink'),
+        forgotPasswordLink = document.getElementById('forgotPasswordLink'),
+        resetModal = document.getElementById('resetModal'),
+        closeResetModal = document.getElementById('closeResetModal'),
+        resetStep1 = document.getElementById('resetStep1'),
+        resetStep2 = document.getElementById('resetStep2'),
+        resetEmailInput = document.getElementById('reset-email'),
+        securityQuestionDisplay = document.getElementById('securityQuestionDisplay'),
+        resetMessage = document.getElementById('resetMessage'),
         // Main App Navigation
         navLinks = {
             dashboard: [document.getElementById('navDashboard'), document.getElementById('mobileNavDashboard')],
@@ -316,19 +324,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- AUTHENTICATION & SESSION ---
 
-    async function handleRegistration(event) { 
+   async function handleRegistration(event) { 
         event.preventDefault(); 
         const formData = new FormData(signupForm); 
-        const { name, email, password } = Object.fromEntries(formData.entries()); 
-        if (!name || !email || !password) { 
-            displayAuthMessage('Please fill out all fields.', false); 
+        const { name, email, password, securityQuestion, securityAnswer } = Object.fromEntries(formData.entries()); 
+        if (!name || !email || !password || !securityQuestion || !securityAnswer) { 
+            displayAuthMessage('Please fill out all fields, including the security question.', false); 
             return; 
         } 
         try { 
             const response = await fetch(`${API_CONFIG.BASE_URL}/register`, { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ fullName: name, email, password }), 
+                // 3. Send the new fields to the server
+                body: JSON.stringify({ 
+                    fullName: name, 
+                    email, 
+                    password,
+                    securityQuestion,
+                    securityAnswer
+                }), 
             }); 
             const data = await response.json(); 
             if (response.ok) { 
@@ -735,6 +750,80 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- EVENT LISTENERS & INITIALIZATION ---
 
     function setupEventListeners() {
+                if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                resetModal.style.display = 'flex';
+                resetStep1.style.display = 'block';
+                resetStep2.style.display = 'none';
+                resetMessage.style.display = 'none';
+            });
+        }
+
+        if (closeResetModal) {
+            closeResetModal.addEventListener('click', () => {
+                resetModal.style.display = 'none';
+            });
+        }
+
+        if (resetStep1) {
+            resetStep1.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = resetEmailInput.value;
+                try {
+                    const response = await fetch(`${API_CONFIG.BASE_URL}/forgot-password`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        resetMessage.style.display = 'none';
+                        securityQuestionDisplay.textContent = data.securityQuestion;
+                        resetStep1.style.display = 'none';
+                        resetStep2.style.display = 'block';
+                    } else {
+                        resetMessage.textContent = data.message;
+                        resetMessage.className = 'message-area message-error';
+                        resetMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        if (resetStep2) {
+            resetStep2.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = resetEmailInput.value;
+                const answer = document.getElementById('reset-answer').value;
+                const newPass = document.getElementById('reset-new-password').value;
+                
+                try {
+                    const response = await fetch(`${API_CONFIG.BASE_URL}/reset-password`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, securityAnswer: answer, newPassword: newPass })
+                    });
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        alert(data.message); // Simple success alert
+                        resetModal.style.display = 'none';
+                        resetStep1.reset();
+                        resetStep2.reset();
+                    } else {
+                        resetMessage.textContent = data.message;
+                        resetMessage.className = 'message-area message-error';
+                        resetMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        }
         if (signupTab) signupTab.addEventListener('click', () => showAuthTab('signup'));
         if (loginTab) loginTab.addEventListener('click', () => showAuthTab('login'));
         if (signupForm) signupForm.addEventListener('submit', handleRegistration);

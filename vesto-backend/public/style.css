@@ -548,3 +548,18 @@ input:checked + .slider:before { transform: translateX(20px); }
     font-size: 0.75rem;
     font-weight: 500;
 }
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+.modal-content {
+    max-width: 400px;
+    width: 100%;
+}

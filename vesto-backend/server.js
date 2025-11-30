@@ -198,9 +198,9 @@ const protect = (req, res, next) => {
 
 // --- API Endpoints ---
 app.post('/api/register', async (req, res) => {
-    const { fullName, email, password } = req.body;
-    if (!fullName || !email || !password) {
-        return res.status(400).json({ message: 'Please provide all required fields.' });
+    const { fullName, email, password, securityQuestion, securityAnswer } = req.body;
+    if (!fullName || !email || !password || !securityQuestion || !securityAnswer) {
+        return res.status(400).json({ message: 'Please provide all required fields, including security question.' });
     }
     try {
         const usersCollection = db.collection('users');
@@ -210,10 +210,13 @@ app.post('/api/register', async (req, res) => {
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedAnswer = await bcrypt.hash(securityAnswer.toLowerCase().trim(), salt);
         const newUser = {
             fullName,
             email,
             password: hashedPassword,
+            securityQuestion,
+            securityAnswer: hashedAnswer,
             cashBalance: 100000.00,
             createdAt: new Date(),
             holdings: [],
@@ -248,7 +251,55 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ message: 'Server error during login.' });
     }
 });
+app.post('/api/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email is required.' });
+    try {
+        const user = await db.collection('users').findOne({ email });
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+        if (!user.securityQuestion) {
+            return res.status(400).json({ message: 'This account does not have a security question set.' });
+        }
+        res.status(200).json({ securityQuestion: user.securityQuestion });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error.' });
+    }
+});
 
+app.post('/api/reset-password', async (req, res) => {
+    const { email, securityAnswer, newPassword } = req.body;
+    
+    if (!email || !securityAnswer || !newPassword) {
+        return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    try {
+        const users = db.collection('users');
+        const user = await users.findOne({ email });
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+
+        // Check if the answer matches the hash
+        const isMatch = await bcrypt.compare(securityAnswer.toLowerCase().trim(), user.securityAnswer);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Incorrect security answer.' });
+        }
+
+        // Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update the password in the database
+        await users.updateOne(
+            { _id: user._id },
+            { $set: { password: hashedPassword } }
+        );
+
+        res.status(200).json({ message: 'Password has been reset successfully. You can now login.' });
+    } catch (error) {
+        console.error('Reset Error:', error);
+        res.status(500).json({ message: 'Server error resetting password.' });
+    }
+});
 app.get('/api/portfolio', protect, async (req, res) => {
     try {
         const user = await db.collection('users').findOne(
