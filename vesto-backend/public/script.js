@@ -913,5 +913,26 @@ document.addEventListener('DOMContentLoaded', () => {
     applyInitialTheme();
     setupEventListeners();
     initializeUserSession();
+    const closeResetModal2 = document.getElementById('closeResetModal2');
+    if (closeResetModal2) {
+        closeResetModal2.addEventListener('click', () => {
+            resetModal.style.display = 'none';
+            // Reset the form view back to Step 1 for next time
+            resetStep1.style.display = 'block';
+            resetStep2.style.display = 'none';
+            resetStep1.reset();
+            resetStep2.reset();
+        });
+    }
+
+    // 2. Close Modal when clicking outside the box (Background click)
+    window.addEventListener('click', (event) => {
+        if (event.target === resetModal) {
+            resetModal.style.display = 'none';
+            // Reset views
+            resetStep1.style.display = 'block';
+            resetStep2.style.display = 'none';
+        }
+    });
 });
 
